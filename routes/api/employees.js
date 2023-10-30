@@ -4,37 +4,21 @@ const router = express.Router();
 const path = require("path");
 const data={};
 
+const employeeController = require('../../controllers/employeeController');
+
 data.employees = require('../../data/employees.json');
 
 // instead of doing router .get router.post router.put router.ddlete we can do router.route and then chain diffrent methods  for the same url
 
 
 router.route('/')
- .get((req,res,next)=>{
-    res.json(data.employees);
- })
- .post((req,res)=>{
+ .get(employeeController.getEmployees)
+ .post(employeeController.addEmployee)
 
-    res.json({
-        "firstname":req.body.firstname,
-        "lastname":req.body.lastname
-    })
-
- })
-
-.put((req,res)=>{
-    res.json({
-        "firstname":req.body.firstname,
-        "lastname":req.body.lastname
-    })
-})
-.delete((req,res)=>{
-    res.json({ id:  `${req.body.id} was deleted` })
-})
+.put(employeeController.updateEmployee)
+.delete(employeeController.deleteEmployee)
 
 
 router.route('/:id')
-.get((req,res)=>{
-     res.json({"id":req.params.id})
-});
+.get(employeeController.getEmployee);
 module.exports = router;

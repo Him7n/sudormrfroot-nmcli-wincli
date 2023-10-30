@@ -7,7 +7,7 @@ const {logEvents,logger} = require('./middlewares/logEvents');
 const { error } = require("console");
 const { resourceUsage } = require("process");
 const errorHandler = require("./middlewares/errorHandler")
-
+const corsoptions = require('./config/corsOptions');
 
 
 //custom middlware
@@ -20,19 +20,6 @@ const errorHandler = require("./middlewares/errorHandler")
     
     // Cross Origin resource sharing
 
-const whitelist=['https://www.google.com','http://localhost:3000'];  
-const corsoptions ={
-    origin:(origin,callback)=>{
-
-        //!ORIGIN MEANS UNDEFINED KO BHI ALLLOW KARDO
-        if(whitelist.indexOf(origin)!==-1 || !origin ){
-            callback(null,true)
-        }else{
-            callback(new Error("Not allowed bt cors"));
-        }
-    },
-    optionsSuccessStatus:200
-}      
 app.use(cors(corsoptions));
             
 
