@@ -6,7 +6,7 @@ const data={};
 
 const employeeController = require('../../controllers/employeeController');
 
-data.employees = require('../../data/employees.json');
+data.employees = require('../../model/employees.json');
 
 // instead of doing router .get router.post router.put router.ddlete we can do router.route and then chain diffrent methods  for the same url
 
