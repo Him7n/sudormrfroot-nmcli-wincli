@@ -1,0 +1,4 @@
+20231029	15:19:27	6bbf8e27-05eb-42e8-a63b-48d8be96df8a	Error Message undefined 	 Not allowed bt cors	 Error 
+20231029	21:48:24	60a753e8-d884-40d6-a59e-70191f8e8a09	Error Message 400 	 Expected property name or '}' in JSON at position 1	 SyntaxError 
+20231030	20:17:06	c6028aba-f5ee-4c66-b67d-1adcf6d44299	Error Message 400 	 Unexpected token 'u', "#" is not valid JSON	 SyntaxError 
+20231031	11:48:38	90681761-3ac1-4480-a078-083c9483ac4f	Error Message undefined 	 token is not defined	 ReferenceError 
