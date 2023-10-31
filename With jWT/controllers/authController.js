@@ -4,7 +4,17 @@
  const uuid = require("uuid");
  const cookieParser = require("cookie-parser");
  const sessions ={};
+ const jwt = require("jsonwebtoken");
+ const fspromises = require("fs").promises;
 
+   const ACCESS_TOKEN_SECRET="2ce49d207d54013df055c61dc7956c366f203d93c01c216fcfa34bf1145b4870973c3d618b562e69b092c5f1d470657dd9f79cc612137ec87484935301db5d52"
+  const REFRESH_TOKEN_SECRET="0c6e1f432fa3e4c6e096250d47520b54ff4368a58b20843365f6327b818a626f4d0f5da5e42d27ba770f67d6e9fac721ef5ce4157ab2372400fe381dfb5edd41"
+ const usersDB = {
+    users: require('../model/users.json'),
+     setUsers: function (data) { this.users = data }
+ }
+
+ require("dotenv").config();
  const handlelogin = async (req,res)=>{
 
     const {username,password} = req.body;
@@ -22,33 +32,43 @@
      const compare = await bcrypt.compare(password,user.password);
      if(compare){
 
-        //make the session 
-const sessionToken = uuid.v4();
-const expiresAt =  Date.now()+1*60*1000;
-console.log(
-    `expires at ${expiresAt}`
+
+
+//JWT
+// console.log(ACESSS_TOKEN_SECRET);
+
+
+const accessToken = jwt.sign(
+    {"username" : `${user.username}`},
+  ACCESS_TOKEN_SECRET,
+    {
+        expiresIn : '60s'
+    }
 )
-// const userid = sessions.length()+1 ||1
-sessions[sessionToken] = {username ,expiresAt
+const refreshToken = jwt.sign(
+    {"username" : `${user.username}`},
+  REFRESH_TOKEN_SECRET,
+    {
+        expiresIn : '5m'
+    }
+)
+//saving the user with the refresh token
+const otherusers = users.filter((users)=> users.username != user.username );
+const currentUser ={ user , refreshToken };
+usersDB.setUsers([...otherusers,currentUser]);
+//write to the file
+ await fspromises.writeFile(path.join(__dirname,'..','model','users.json'),
+ JSON.stringify(usersDB.users)
+ )
 
-}; //key value pair is stored in the backend database gonan pass that to the header the session ID in the form of cookie
+ res.cookie("jwt",refreshToken,{httpOnly: true , maxAge : 1*60*60*1000})
 
-res.cookie("session", sessionToken,{
-    httpOnly : true ,
-    expires: new Date(Date.now() +  1*10*1000)
+res.status(200).json({"succces":"login successfull",
+accessToken
 });
 
-// console.log(res.cookies);
-// dono se same baat pad rahi
-
-// res.set("Set-Cookie",`session=${sessionToken}`);
-
-//header set kiya hai lekin header l ander expiring nhi daal paaya
-// res.redirect('/home');
-res.status(200).json({"succces":"login successfull"});
-
      }else{
-        res.json({"message": "Password galat hai"
+        res.sendStatus(401).json({"message": "Password galat hai"
     })
      }
 
@@ -57,60 +77,7 @@ res.status(200).json({"succces":"login successfull"});
 
 
 
- const handleLogout = (req,res)=>{
-// const cookiefound = req.headers.cookie?.split('=')[1];
-console.log(req.cookies);
- const {session} = req.cookies;
-if(session){
-
-res.cookie("session", null,{
-    httpOnly : true ,
-    expires:  new Date(Date.now())
-});
-console.log(res.cookies)
-console.log("logout out")
-   return  res.json({"message":"loged out"})
-}else{
-
-    console.log("login first")
- return   res.json({"message":"log in first"})
 
 
-}
 
-// console.log(session);
-// const usersession = sessions[cookiefound];
-
-// console.log(usersession);
-// if(cookiefound!="null"){
-    
-//     console.log("you are loged in ");
-
-// console.log('loging you out');
-// delete sessions[cookiefound];
-
-// res.set('Set-Cookie',`session=null`)
-// return res.json({"success" :"logout successfully "})
-
-// //session id kko null kardo
-
-// }
-// else {console.log("login first no session id found") ; 
-//  return res.json({"message":"login first"})
-// }
-
-res.end();
- };
-
- const handleWelcome = (req,res)=>{
-
-    //first check if you area loged in or not
-console.log(req.cookies)
-    const  {session} = req.cookies;
-
-    if(session) return res.status(200).json({"sucess":"Welcome to the home page"})
-    else return res.json({"message":"Log in first"});
-
- }
-
-module.exports = {handlelogin , handleLogout,handleWelcome};
+module.exports = {handlelogin };
