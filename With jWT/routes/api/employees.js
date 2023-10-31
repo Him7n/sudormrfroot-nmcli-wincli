@@ -5,6 +5,7 @@ const path = require("path");
 const data={};
 
 const employeeController = require('../../controllers/employeeController');
+const verifyJWT = require('../../middlewares/verifyJWT')
 
 data.employees = require('../../model/employees.json');
 
@@ -12,7 +13,7 @@ data.employees = require('../../model/employees.json');
 
 
 router.route('/')
- .get(employeeController.getEmployees)
+ .get(verifyJWT,employeeController.getEmployees)
  .post(employeeController.addEmployee)
 
 .put(employeeController.updateEmployee)

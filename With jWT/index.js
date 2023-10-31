@@ -9,7 +9,7 @@ const { resourceUsage } = require("process");
 const errorHandler = require("./middlewares/errorHandler")
 const corsoptions = require('./config/corsOptions');
 const cookieParser = require("cookie-parser");
-
+const verifyJWT = require('./middlewares/verifyJWT')
 
 
 //custom middlware
@@ -62,9 +62,10 @@ const PORT = process.env.PORT || 3000;
 //**/ ROUTES */
 
 app.use('/',require('./routes/root.js'))
-app.use('/employees',require('./routes/api/employees'))
 app.use('/users',require('./routes/api/register'))
-app.use('/login',require('./routes/api/auth'));
+app.use('/auth',require('./routes/api/auth'));
+app.use(verifyJWT);
+app.use('/employees',require('./routes/api/employees'))
 
                         // app.get('/',(req,res)=>{
 

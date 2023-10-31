@@ -21,6 +21,7 @@
 
     //check if user doesnt even exsis or not
     const user = users.find((user)=> user.username == username );
+    console.log(user);
     if(!user){
         return  res.status(400).json({"error":`${username} does not exists`});
     }
@@ -54,7 +55,7 @@ const refreshToken = jwt.sign(
 )
 //saving the user with the refresh token
 const otherusers = users.filter((users)=> users.username != user.username );
-const currentUser ={ user , refreshToken };
+const currentUser ={ ...user , refreshToken };
 usersDB.setUsers([...otherusers,currentUser]);
 //write to the file
  await fspromises.writeFile(path.join(__dirname,'..','model','users.json'),
