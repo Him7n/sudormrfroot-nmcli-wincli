@@ -64,6 +64,8 @@ const PORT = process.env.PORT || 3000;
 app.use('/',require('./routes/root.js'))
 app.use('/users',require('./routes/api/register'))
 app.use('/auth',require('./routes/api/auth'));
+app.use('/refresh',require('./routes/api/refresh'));
+
 app.use(verifyJWT);
 app.use('/employees',require('./routes/api/employees'))
 

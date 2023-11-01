@@ -20,7 +20,10 @@ jwt.verify(
 token,
 ACCESS_TOKEN_SECRET,
 (err,decoded)=>{
-    if(err) return res.sendStatus(403) // invalid token
+    if(err){ 
+        
+        console.log(`docoded mein problenm`)
+        return  res.sendStatus(403)} // invalid token
     req.username = decoded.username;
     next();
 

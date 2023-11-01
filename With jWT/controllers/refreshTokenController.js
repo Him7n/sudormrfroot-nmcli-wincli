@@ -1,5 +1,5 @@
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
+const jwtt = require("jsonwebtoken");
 const { handlelogin } = require("./authController");
 const fspromises = require("fs").promises;
 const bcrypt = require("bcrypt")
@@ -18,11 +18,16 @@ const ACCESS_TOKEN_SECRET="2ce49d207d54013df055c61dc7956c366f203d93c01c216fcfa34
  const HandleRefreshToken = async (req,res)=>{
 
     const {username,password} = req.body;
-    const cookies = req.cookie;
-if(!cookies?.jwt) return res.sendStatus(401);
-console.log(cookies.jwt);
-
-const refreshToken = cookies.jwt;
+    
+    console.log(req.cookies);
+    
+    const {jwt} = req.cookies;
+console.log(jwt)
+// console.log(cookies);
+if(!jwt) return res.json({"cookie nhi mil rahi jwt nhi mil raha" :"i don tknwo"});
+// console.log(cookies.jwt);
+// jai shree raam !!!
+const refreshToken = jwt;
     //check if user doesnt even exsis or not
     const user = users.find((user)=> user.refreshToken == refreshToken );
     console.log(user);
@@ -32,13 +37,13 @@ const refreshToken = cookies.jwt;
 
 
 
-    jwt.verify(
+    jwtt.verify(
         refreshToken,
         REFRESH_TOKEN_SECRET,
         (err,decoded)=>{
-            if(err) return res.sendStatus(403); //forbidden
+            if(err) return res.status(403).json({"message":`kya errro : ${err.message} `}); //forbidden
 
-            const accessToken = jwt.sign(
+            const accessToken = jwtt.sign(
               {  "username" : decoded.username},
             ACCESS_TOKEN_SECRET,
             {
@@ -52,4 +57,4 @@ const refreshToken = cookies.jwt;
 
 
  }
-module.exports = HandleRefreshToken;
+module.exports = {HandleRefreshToken};
